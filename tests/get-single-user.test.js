@@ -9,13 +9,14 @@ describe("Get single user endpoint test suite", () => {
     request.setDefaultTimeout(5000);
   });
 
-  it("Get single user test", async () => {
+  it("get single user test", async () => {
     const postId = 2;
 
-    const requestBody = {
+    const responseBody = {
       data: {
         email: "janet.weaver@reqres.in",
         first_name: "Janet",
+        id: 2,
         last_name: "Weaver",
         avatar: "https://reqres.in/img/faces/2-image.jpg",
       },
@@ -29,9 +30,16 @@ describe("Get single user endpoint test suite", () => {
       .get(`${baseUrl}/users/${postId}`)
       .expectStatus(200)
       .expectResponseTime(5000)
-      .expectBodyContains(requestBody.support) //if i try with requestBody.data is not working
-      .expectJsonSchema(getSingleUserSchema);
+      .expectJsonSchema(getSingleUserSchema)
+      .expectJson(responseBody)
   });
 
+  it("try get an user that doesn't exist test", async () => {
+    const postId = 23;
 
+    await spec()
+      .get(`${baseUrl}/users/${postId}`)
+      .expectStatus(404)
+      .expectResponseTime(5000);
+  });
 });
